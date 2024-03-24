@@ -2,7 +2,6 @@
 
 #define endl "\n"
 #define fast_io                       \
-    \ 
     ios_base::sync_with_stdio(false); \
     cin.tie(NULL);                    \
     cout.tie(NULL);
@@ -90,11 +89,12 @@ bool cmp(vector<int> &v1, vector<int> &v2)
 
 bool check(PII &p1, PII &p2)
 {
-    return p1.f > p2.f
+    return p1.f > p2.f;
 }
 
 void solve()
 {
+    cout<<"Hello"<<endl;
 }
 
 int main()

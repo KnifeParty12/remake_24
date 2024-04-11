@@ -79,49 +79,63 @@ ll gcd(ll a, ll b)
 
 /*----------GLOBAL BOIS--------------- */
 
-int numOfPainters(vector<int> &arr, int n, int k, int target)
+class Solution
 {
-
-    int sum = 0, painters = 0;
-    for (int i = 0; i < n; i++)
+public:
+    int maxConsecutiveAnswers(string str, int k)
     {
-        sum += arr[i];
-        if (sum >= target)
+        int n = str.size();
+
+        int lo = 0, hi = 0, res = 0, moves = k;
+        while (hi < n)
         {
-            painters++;
-            sum = arr[i];
+            if (str[hi] == 'F')
+                hi++;
+            else
+            {
+                if (moves)
+                    hi++, moves--, res = max(res, hi - lo);
+                else
+                {
+                    res = max(res, hi - lo);
+                    if (str[lo] == 'T')
+                        moves++;
+                    lo++;
+                }
+            }
         }
-    }
-    return painters;
-}
 
-int painterPartition(vector<int> &arr, int k)
-{
-    int n = arr.size();
-    vector<int> prefix(n, 0);
-    prefix[0] = arr[0];
-    for (int i = 1; i < n; i++)
-        prefix[i] = prefix[i - 1] + arr[i];
-    int lo = *max_element(arr.begin(), arr.end()); // if we got n painters
-    int hi = prefix[n - 1];                        // sum of all floors till now
-    int res = -1;
+        if (str[hi - 1] == 'F' || moves)
+            res = max(res, hi - lo);
 
-    while (lo <= hi)
-    {
-        ll mid = (lo + hi) >> 1;
-        int painters = numOfPainters(arr, n, k, mid);
-        if (painters > k)
-            lo = mid + 1, res = mid;
-        else
-            hi = mid - 1;
+        lo = 0, hi = 0, moves = k;
+        while (hi < n)
+        {
+            if (str[hi] == 'T')
+                hi++;
+            else
+            {
+                if (moves)
+                    hi++, moves--, res = max(res, hi - lo);
+                else
+                {
+                    res = max(res, hi - lo);
+                    if (str[lo] == 'F')
+                        moves++;
+                    lo++;
+                }
+            }
+        }
+
+        if (str[hi - 1] == 'T' || moves)
+            res = max(res, hi - lo);
+
+        return res;
     }
-    return res;
-}
+};
 
 void solve()
 {
-    vector<int> temp = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    cout << painterPartition(temp, 3) << endl;
 }
 
 int main()

@@ -1,3 +1,5 @@
+// https://leetcode.com/problems/minimum-number-of-days-to-make-m-bouquets/description/
+
 #include <bits/stdc++.h>
 
 #define endl "\n"
@@ -79,49 +81,60 @@ ll gcd(ll a, ll b)
 
 /*----------GLOBAL BOIS--------------- */
 
-int numOfPainters(vector<int> &arr, int n, int k, int target)
-{
+typedef long long ll;
 
-    int sum = 0, painters = 0;
-    for (int i = 0; i < n; i++)
+class Solution
+{
+public:
+    bool isValid(vector<int> &arr, int m, int k, int days)
     {
-        sum += arr[i];
-        if (sum >= target)
+        int bouqets = 0, flowers = 0;
+
+        for (int i = 0; i < arr.size(); i++)
         {
-            painters++;
-            sum = arr[i];
+            // need to check if subarrays have a max of days and not more than
+            // that
+            if (arr[i] <= days)
+            {
+                flowers++;
+                if (flowers == k)
+                {
+                    bouqets++;
+                    flowers = 0;
+                }
+            }
+            else
+                flowers = 0;
+            if (bouqets == m)
+                return true;
         }
+        return bouqets == m;
     }
-    return painters;
-}
 
-int painterPartition(vector<int> &arr, int k)
-{
-    int n = arr.size();
-    vector<int> prefix(n, 0);
-    prefix[0] = arr[0];
-    for (int i = 1; i < n; i++)
-        prefix[i] = prefix[i - 1] + arr[i];
-    int lo = *max_element(arr.begin(), arr.end()); // if we got n painters
-    int hi = prefix[n - 1];                        // sum of all floors till now
-    int res = -1;
-
-    while (lo <= hi)
+    int minDays(vector<int> &bloomDay, int m, int k)
     {
-        ll mid = (lo + hi) >> 1;
-        int painters = numOfPainters(arr, n, k, mid);
-        if (painters > k)
-            lo = mid + 1, res = mid;
-        else
-            hi = mid - 1;
+
+        int high = *max_element(bloomDay.begin(), bloomDay.end());
+        int lo = *min_element(bloomDay.begin(), bloomDay.end());
+        int res = -1;
+
+        if ((ll)m * k > bloomDay.size())
+            return -1;
+
+        while (lo <= high)
+        {
+            int mid = lo + (high - lo) / 2;
+            if (isValid(bloomDay, m, k, mid))
+                res = mid, high = mid - 1;
+            else
+                lo = mid + 1;
+        }
+        return res;
     }
-    return res;
-}
+};
 
 void solve()
 {
-    vector<int> temp = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    cout << painterPartition(temp, 3) << endl;
 }
 
 int main()

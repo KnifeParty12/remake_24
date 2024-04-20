@@ -1,4 +1,7 @@
-#include<bits/stdc++.h>
+// https://leetcode.com/problems/burst-balloons/
+
+#include <bits/stdc++.h>
+
 #define endl "\n"
 #define fast_io                       \
     ios_base::sync_with_stdio(false); \
@@ -11,7 +14,6 @@
 #define PII pair<int, int>
 #define MAX 1000005
 #define inf 1000000000000000LL
-#define mod 1000000007
 #pragma GCC optimize("Ofast")
 #pragma GCC target("avx,avx2,fma")
 #pragma GCC optimization("unroll-loops")
@@ -47,21 +49,6 @@ int fast_expo(ll a, ll b, ll p) // usually p is 10^9 + 7(prime)
     return ans;
 }
 
-int mulmod(ll a, ll b)
-{
-    if (a == 0)
-        return 0;
-    ll ans = 1;
-    while (b)
-    {
-        if (b & 1)
-            ans += a, ans %= mod;
-        a *= 2, a %= mod;
-        b /= 2;
-    }
-    return ans % mod;
-}
-
 ll inv(ll a, ll p) // modulo inverse signifies a value "b" such that a*b = 1(mod p)
 {
     return fast_expo(a, p - 2, p);
@@ -94,24 +81,40 @@ ll gcd(ll a, ll b)
 
 /*----------GLOBAL BOIS--------------- */
 
-string yo = "Yes\n";
-string no = "No\n";
-
-bool cmp(vector<int> &v1, vector<int> &v2)
+class Solution
 {
-    return v1[1] < v2[1];
-}
+public:
+    int n;
 
-bool check(PII &p1, PII &p2)
-{
-    return p1.f > p2.f;
-}
+    int solve(vector<int> &arr, int start, int end, vector<vector<int>> &dp)
+    {
+        if (start > end)
+            return 0;
+
+        if (dp[start][end] != -1)
+            return dp[start][end];
+        int res = 0;
+        int left = start - 1 >= 0 ? arr[start - 1] : 1;
+        int right = end + 1 < n ? arr[end + 1] : 1;
+        for (int i = start; i <= end; i++)
+        { // which ballon do we choose
+            res = max(res, solve(arr, start, i - 1, dp) +
+                               solve(arr, i + 1, end, dp) +
+                               arr[i] * left * right);
+        }
+        return dp[start][end] = res;
+    }
+
+    int maxCoins(vector<int> &nums)
+    {
+        n = nums.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return solve(nums, 0, n - 1, dp);
+    }
+};
 
 void solve()
 {
-    char a = 'a';
-    cout<<(int)a<<endl;
-
 }
 
 int main()

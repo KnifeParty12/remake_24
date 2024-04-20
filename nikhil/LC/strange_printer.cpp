@@ -1,4 +1,7 @@
-#include<bits/stdc++.h>
+// https://leetcode.com/problems/strange-printer/
+
+#include <bits/stdc++.h>
+
 #define endl "\n"
 #define fast_io                       \
     ios_base::sync_with_stdio(false); \
@@ -11,7 +14,6 @@
 #define PII pair<int, int>
 #define MAX 1000005
 #define inf 1000000000000000LL
-#define mod 1000000007
 #pragma GCC optimize("Ofast")
 #pragma GCC target("avx,avx2,fma")
 #pragma GCC optimization("unroll-loops")
@@ -47,21 +49,6 @@ int fast_expo(ll a, ll b, ll p) // usually p is 10^9 + 7(prime)
     return ans;
 }
 
-int mulmod(ll a, ll b)
-{
-    if (a == 0)
-        return 0;
-    ll ans = 1;
-    while (b)
-    {
-        if (b & 1)
-            ans += a, ans %= mod;
-        a *= 2, a %= mod;
-        b /= 2;
-    }
-    return ans % mod;
-}
-
 ll inv(ll a, ll p) // modulo inverse signifies a value "b" such that a*b = 1(mod p)
 {
     return fast_expo(a, p - 2, p);
@@ -94,24 +81,60 @@ ll gcd(ll a, ll b)
 
 /*----------GLOBAL BOIS--------------- */
 
-string yo = "Yes\n";
-string no = "No\n";
-
-bool cmp(vector<int> &v1, vector<int> &v2)
+#define pb push_back
+class Solution
 {
-    return v1[1] < v2[1];
-}
+public:
+    int n;
 
-bool check(PII &p1, PII &p2)
-{
-    return p1.f > p2.f;
-}
+    int solve(string str, int start, int end, vector<vector<int>> &dp)
+    {
+        if (start == end)
+            return 1;
+        if (start > end)
+            return 0;
+
+        if (dp[start][end] != -1)
+            return dp[start][end];
+        // cases
+        int res = INT_MAX;
+        if (str[start] == str[end])
+            res = solve(str, start, end - 1, dp);
+        else
+        {
+            res = 1 + solve(str, start, end - 1, dp); // last char diff
+
+            for (int i = start + 1; i < end; i++)
+            {
+                if (str[i] == str[end])
+                    res = min(res, solve(str, start, i - 1, dp) + solve(str, i, end - 1, dp));
+            }
+        }
+        return dp[start][end] = res;
+    }
+
+    int strangePrinter(string str)
+    {
+        string res = "";
+        char last = str[0];
+        res.pb(last);
+        for (int i = 1; i < str.size(); i++)
+        { // first compress it
+            if (str[i] != last)
+            {
+                res.pb(str[i]);
+                last = str[i];
+            }
+        }
+
+        n = res.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return solve(res, 0, n - 1, dp);
+    }
+};
 
 void solve()
 {
-    char a = 'a';
-    cout<<(int)a<<endl;
-
 }
 
 int main()

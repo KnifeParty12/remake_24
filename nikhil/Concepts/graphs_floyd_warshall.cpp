@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+
 #define endl "\n"
 #define fast_io                       \
     ios_base::sync_with_stdio(false); \
@@ -11,7 +12,6 @@
 #define PII pair<int, int>
 #define MAX 1000005
 #define inf 1000000000000000LL
-#define mod 1000000007
 #pragma GCC optimize("Ofast")
 #pragma GCC target("avx,avx2,fma")
 #pragma GCC optimization("unroll-loops")
@@ -47,21 +47,6 @@ int fast_expo(ll a, ll b, ll p) // usually p is 10^9 + 7(prime)
     return ans;
 }
 
-int mulmod(ll a, ll b)
-{
-    if (a == 0)
-        return 0;
-    ll ans = 1;
-    while (b)
-    {
-        if (b & 1)
-            ans += a, ans %= mod;
-        a *= 2, a %= mod;
-        b /= 2;
-    }
-    return ans % mod;
-}
-
 ll inv(ll a, ll p) // modulo inverse signifies a value "b" such that a*b = 1(mod p)
 {
     return fast_expo(a, p - 2, p);
@@ -94,24 +79,34 @@ ll gcd(ll a, ll b)
 
 /*----------GLOBAL BOIS--------------- */
 
-string yo = "Yes\n";
-string no = "No\n";
+int v, e;
 
-bool cmp(vector<int> &v1, vector<int> &v2)
+void floydWarshall()
 {
-    return v1[1] < v2[1];
-}
+    vector<vector<int>> adj(v, vector<int>(v, INT_MAX));
+    vector<vector<int>> dist(v, vector<int>(v, 0)); //  WE require a Distance matrix
 
-bool check(PII &p1, PII &p2)
-{
-    return p1.f > p2.f;
+    for (int i = 0; i < v; i++)
+    {
+        for (int j = 0; j < v; j++)
+            dist[i][j] = adj[i][j]; // INT_MAX if no path exists
+    }
+
+    for (int int k = 0; k < v; k++)
+    { // k is the intermediate node between i and j
+        for (int i = 0; i < v; i++)
+        {
+            for (int j = 0; j < v; j++)
+            {
+                if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX && dist[i][j] > dist[i][k] + dist[k][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
 }
 
 void solve()
 {
-    char a = 'v';
-    char b = 'a';
-    cout<<abs((int) a - b)<<endl;
 }
 
 int main()
